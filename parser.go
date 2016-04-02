@@ -41,20 +41,20 @@ func check_right_rule(node_l int, nodes []*Node, rule ParserRule) (int, int, boo
 	found = true
 	token_l := len(rule_tokens)
 	for i := node_l - 1; i >= token_l-1; i-- {
-		end = i
+		end = i + 1
 		for j := 0; j < token_l; j++ {
-			token = nodes[i+j].token
+			token = nodes[i-j].token
 			if token.TokenType == tokenizer.Operator &&
-				len(nodes[i+j].branches) > 0 {
+				len(nodes[i-j].branches) > 0 {
 				token.TokenType = tokenizer.Expression
 			}
-			if nodes[i-j].token.Equivalent(rule_tokens[token_l-j-1]) == false {
+			if token.Equivalent(rule_tokens[token_l-j-1]) == false {
 				found = false
 				break
 			}
 		}
 		if found == true {
-			start = i - token_l
+			start = i + 1 - token_l
 			goto EXIT
 		}
 		found = true

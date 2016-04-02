@@ -26,8 +26,10 @@ func (rule ParserRule) Tokens() []tokenizer.Token {
 		tokens[i] = f(tokenizer.GetToken)[0]
 		if tokens[i].TokenType == tokenizer.Symbol {
 			switch tokens[i].Symbolic {
-			case "E":
+			case "W":
 				tokens[i].TokenType = tokenizer.Wildcard
+			case "E":
+				tokens[i].TokenType = tokenizer.Expression
 			case "N":
 				tokens[i].TokenType = tokenizer.Numeric
 			}
@@ -47,7 +49,19 @@ func MakeRule(direction int, tokens string, fx func([]*Node) *Node) ParserRule {
 var StandardGrammar = []ParserRule{
 	MakeRule(Left, "E^E", parse_bin_op),
 	MakeRule(Left, "E•E", parse_bin_op),
-	MakeRule(Left, "E÷E", parse_bin_op),
+	MakeRule(Left, "N E", parse_implicit_bin_op),
+	MakeRule(Left, "E N", parse_implicit_bin_op),
+	MakeRule(Left, "E/E", parse_bin_op),
 	MakeRule(Left, "E+E", parse_bin_op),
-	MakeRule(Left, "N E", parse_implicit_binary_operator),
+	MakeRule(Left, "E±E", parse_bin_op),
+	MakeRule(Left, "E∓E", parse_bin_op),
+	MakeRule(Left, "∑E", parse_un_op),
+	MakeRule(Left, "∏E", parse_un_op),
+	MakeRule(Left, "∂E", parse_un_op),
+	MakeRule(Left, "√E", parse_un_op),
+	MakeRule(Left, "E≈E", parse_bin_op),
+	MakeRule(Left, "E=E", parse_bin_op),
+	MakeRule(Left, "E≠E", parse_bin_op),
+	MakeRule(Left, "E≡E", parse_bin_op),
+	MakeRule(Left, "E≢E", parse_bin_op),
 }
