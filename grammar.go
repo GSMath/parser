@@ -14,16 +14,14 @@ type Node struct {
 
 type ParserRule struct {
 	direction int
-	rule      []rune
+	rule      []tokenizer.Token
 	action    func([]*Node) *Node
 }
 
-func (rule ParserRule) Tokens() []tokenizer.Token {
+func rule_tokens(rule_string []rune) []tokenizer.Token {
 	var tokens []tokenizer.Token
-	token_func := tokenizer.TokenizeString(string(rule.rule))
-	tokens = make([]tokenizer.Token, len(token_func))
-	for i, f := range token_func {
-		tokens[i] = f(tokenizer.GetToken)[0]
+	tokens = tokenizer.TokenizeString(string(rule_string))
+	for i := 0; i < len(tokens); i++ {
 		if tokens[i].TokenType == tokenizer.Symbol {
 			switch tokens[i].Symbolic {
 			case "W":
@@ -34,16 +32,15 @@ func (rule ParserRule) Tokens() []tokenizer.Token {
 				tokens[i].TokenType = tokenizer.Numeric
 			}
 		}
+		i++
 	}
 	return tokens
 }
 
-func MakeRule(direction int, tokens string, fx func([]*Node) *Node) ParserRule {
-	return ParserRule{
-		direction: direction,
-		rule:      []rune(tokens),
-		action:    fx,
-	}
+func MakeRule(direction int, rule_string string, fx func([]*Node) *Node) ParserRule {
+	var rule ParserRule = ParserRule{direction: direction, action: fx}
+	rule.rule = rule_tokens([]rune(rule_string))
+	return rule
 }
 
 var StandardGrammar = []ParserRule{
