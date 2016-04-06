@@ -1,16 +1,11 @@
 package parser
 
-import "github.com/GSMath/lexer/tokenizer"
+import "github.com/GoSym/lexer/tokenizer"
 
 const (
 	Left  = -1
 	Right = 1
 )
-
-type Node struct {
-	token    tokenizer.Token
-	branches []*Node
-}
 
 type ParserRule struct {
 	direction int

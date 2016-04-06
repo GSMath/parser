@@ -3,7 +3,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/GSMath/lexer/tokenizer"
+	"github.com/GoSym/lexer/tokenizer"
 )
 
 func TestMakeNode(t *testing.T) {
@@ -28,7 +28,7 @@ func TestMakeNode(t *testing.T) {
 }
 
 func TestParseString(t *testing.T) {
-	node := ParseString("2•(3^√2 + 2x) + ∑ßi ≈ 3", StandardGrammar)
+	node := ParseString("2•(3^√2 + 2x)/3 * 1i", StandardGrammar)
 	if node == nil {
 		t.Error("Node is nil")
 	}

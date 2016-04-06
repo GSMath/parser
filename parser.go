@@ -1,10 +1,6 @@
 package parser
 
-import (
-	"fmt"
-
-	"github.com/GSMath/lexer/tokenizer"
-)
+import "github.com/GoSym/lexer/tokenizer"
 
 func check_left_rule(node_l int, nodes []*Node, rule ParserRule) (int, int, bool) {
 	var start, end int
@@ -80,7 +76,7 @@ func check_rule(node_l int, nodes []*Node, rule ParserRule) (int, int, bool) {
 	return start, end, found
 }
 
-func MakeNode(token tokenizer.Token, rules []ParserRule) *Node {
+func MakeSimpleNode(token tokenizer.Token) *Node {
 	var node Node
 	switch token.TokenType {
 	case tokenizer.Symbol:
@@ -98,13 +94,18 @@ func MakeNode(token tokenizer.Token, rules []ParserRule) *Node {
 	case tokenizer.Empty:
 		node.token = token
 		node.branches = []*Node{}
-	case tokenizer.Subexpression:
-		sub_node := ParseString(token.Subexpression, rules)
-		if sub_node != nil {
-			node = *(sub_node)
-		}
 	}
 	return &node
+}
+
+func MakeNode(token tokenizer.Token, rules []ParserRule) *Node {
+	var node *Node
+	if token.TokenType == tokenizer.Subexpression {
+		node = ParseString(token.Subexpression, rules)
+	} else {
+		node = MakeSimpleNode(token)
+	}
+	return node
 }
 
 func ParseString(expression string, rules []ParserRule) *Node {
@@ -139,9 +140,6 @@ func ParseString(expression string, rules []ParserRule) *Node {
 		}
 	}
 	if length > 1 {
-		for i := 0; i < length; i++ {
-			fmt.Println(nodes[i].token)
-		}
 		node = nil
 	}
 	return node
